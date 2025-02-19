@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Welcome to Your Dashboard</h2>
+    <!-- <p>Your User Group: {{ usergroup }}</p>
+
+    <h3>Update Profile</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Profile</button>
+    </form> -->
+
+    <h2>Welcome, {{ request.user.username }} ({{ usergroup }})</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Profile</button>
+</form>
+<a href="{% url 'logout' %}">Logout</a>
+
+</body>
+</html>
