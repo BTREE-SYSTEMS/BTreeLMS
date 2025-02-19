@@ -75,5 +75,5 @@ We welcome contributions! Follow these steps:
 This project is licensed under the MIT License.  
 
 ## 👨‍💻 DEV Team  
-**Varun**
+**Varun**,
 **Valluvan**
