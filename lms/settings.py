@@ -80,7 +80,7 @@ pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lms',
+        'NAME': 'lmstest',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',  # or your MySQL server IP
