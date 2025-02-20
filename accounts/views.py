@@ -3,32 +3,73 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserProfileUpdateForm
-from .models import Userdetail
+from .models import Userdetail,Usergroupdetail
 from django.contrib.auth.models import User
 from .decorators import admin_required,role_required
+from django.http import HttpResponse
+from django.contrib import messages
 
 # Admin creates a new user
-
-
-
 def Home(request):
     
     return render(request,"accounts/base.html")
 
 
-
-
-# @login_required()
+@login_required(login_url='login')
 # @admin_required
-def register_user(request):
-    if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('admin_dashboard')  # Redirect admin after user creation
+def register(request):
+    user = request.user  # Get logged-in user
+    
+    try:
+        # Fetch user details
+        user_detail = Userdetail.objects.get(username=user.username)
+        user_role = user_detail.usergroupid.usergroupname  # Get role name
+    except Userdetail.DoesNotExist:
+        user_role = None
+    
+    # Assign createdby value
+    created_by = None
+    if user_role == 'Admin':
+        created_by = 1
+        user_groups = Usergroupdetail.objects.all()  # Fetch all user groups
+    elif user_role == 'Staff':
+        created_by = 2
+        user_groups = Usergroupdetail.objects.exclude(usergroupname='Admin')  # Exclude Admin group
     else:
-        form = UserRegistrationForm() 
-    return render(request, 'accounts/register.html', {'form': form})
+        return HttpResponse("You don't have permission to register a user.")
+    
+ 
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        useremail = request.POST.get('useremail')
+        usercontactnumber = request.POST.get('usercontactnumber')
+        userpassword = request.POST.get('userpassword')
+        usergroupid = request.POST.get('usergroupid')
+        usergender = request.POST.get('usergender')
+
+        # if created_by:
+            # ✅ Save to the database
+        new_user = Userdetail(
+                username=username,
+                useremail=useremail,
+                usercontactnumber=usercontactnumber,
+                userpassword=userpassword,  # ⚠️ Hash password before saving in production!
+                usergroupid_id=usergroupid,  # FK reference
+                usergender=usergender,
+                createdby=created_by,
+            )
+        new_user.save()
+        messages.success(request, "User registered successfully!")
+        # ✅ Redirect based on role
+        if created_by == 1:  # Admin
+            return redirect('admin_dashboard')
+        elif created_by == 2:  # Staff
+            return redirect('staff_dashboard')
+        # else:
+        messages.error(request, "You don't have permission to register a user.")
+
+    return render(request, 'accounts/register.html', {'user_groups': user_groups, 'created_by': created_by})
 
 
 def user_login(request):
@@ -56,7 +97,7 @@ def user_login(request):
                 request.session['user_role'] = user_detail.usergroupid.usergroupname  # Ensure role is stored!
                 
                 print(f"Session after login: {dict(request.session)}")  # ✅ Print full session
-                
+
                 # Redirect based on role
                 return redirect_based_on_role(user_detail)
 
@@ -81,6 +122,9 @@ def user_login(request):
                 request.session['user_id'] = user_detail.userid
                 request.session['username'] = user_detail.username
                 request.session['user_role'] = user_detail.usergroupid.usergroupname
+                
+                # Verify session data
+                print(f"Session after login: {dict(request.session)}")
 
                 # ✅ Redirect based on role
                 return redirect_based_on_role(user_detail)
@@ -105,8 +149,11 @@ def redirect_based_on_role(user_detail):
         return redirect('trainer_dashboard')
     elif role == "Student":
         return redirect('student_dashboard')
+    elif role == "Staff":
+        return redirect('staff_dashboard')
     else:
-        return redirect('staff_dashboard')  # Fallback for unknown roles
+        return redirect('unauthorized_page')  # Fallback for unknown roles
+
 
 # User Dashboard (Profile Update)
 # @login_required
@@ -124,8 +171,8 @@ def dashboard(request):
 
 # Logout User
 def user_logout(request):
+    request.session.flush()
     logout(request)
-    # request.session.flush() # Clear session data
     return redirect('login')
 
 
@@ -181,4 +228,5 @@ def no_permission(request):
     return render(request, 'accounts/no_permission.html')
 
 def unauthorized_page(request):
+    print(f"Session in unauthorized page: {dict(request.session)}")
     return render(request, "accounts/unauthorized.html", {"message": "Access Denied! You are not authorized to view this page."})
