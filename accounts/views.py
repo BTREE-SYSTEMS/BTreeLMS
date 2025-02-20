@@ -1,5 +1,5 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserProfileUpdateForm
@@ -10,10 +10,21 @@ from django.http import HttpResponse
 from django.contrib import messages
 
 # Admin creates a new user
+
+
+
 def Home(request):
-    
     return render(request,"accounts/base.html")
 
+@login_required(login_url='login')
+def user_list(request):
+    users = Userdetail.objects.select_related('usergroupid').all()  # Fetch all users with related user group
+    return render(request, 'accounts/user_list.html', {'users': users})
+
+@login_required(login_url='login')
+def user_detail(request, user_id):
+    user = get_object_or_404(Userdetail, userid=user_id)
+    return render(request, 'accounts/user_detail.html', {'user': user})
 
 @login_required(login_url='login')
 # @admin_required

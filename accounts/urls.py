@@ -13,5 +13,7 @@ urlpatterns = [
     path('staff_dashboard/',staff_dashboard,name='staff_dashboard'),
     path('no_permission/', no_permission, name='no_permission'),
     path('unauthorized_page/',unauthorized_page,name='unauthorized_page'),
+    path('users/', user_list, name='user_list'),  
+    path('users/<int:user_id>/', user_detail, name='user_detail'), 
 ]
 
