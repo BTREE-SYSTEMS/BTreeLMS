@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Registration</title>
+</head>
+<body>
+    <h2>Register</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br><br>
+
+        <label for="userpassword">Password:</label>
+        <input type="password" name="userpassword" required><br> <br>
+
+        <label for="useremail">Email:</label>
+        <input type="email" name="useremail" required><br> <br>
+
+        <label for="usercontactnumber">Contact Number:</label>
+        <input type="text" name="usercontactnumber" required><br> <br>
+
+
+        <label for="usergroupid">User Group:</label>
+        <select name="usergroupid" required>
+            {% for group in user_groups %}
+                <option value="{{ group.usergroupid }}">{{ group.usergroupname }}</option>
+            {% endfor %}
+        </select><br> <br>
+
+        <label for="usergender">Gender:</label>
+        <select name="usergender">
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select><br> <br>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

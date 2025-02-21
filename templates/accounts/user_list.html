@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+</head>
+<body>
+    <h2>Existing Users</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>S. No</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>User Group</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="{% url 'user_detail' user.userid %}">
+                        {{ user.username }}
+                    </a>
+                </td>
+                <td>{{ user.useremail }}</td>
+                <td>{{ user.usergroupid.usergroupname }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
