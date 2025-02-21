@@ -17,6 +17,7 @@ def Home(request):
     return render(request,"accounts/base.html")
 
 @login_required(login_url='login')
+@role_required("Admin","Staff")
 def user_list(request):
     users = Userdetail.objects.select_related('usergroupid').all()  # Fetch all users with related user group
     return render(request, 'accounts/user_list.html', {'users': users})
