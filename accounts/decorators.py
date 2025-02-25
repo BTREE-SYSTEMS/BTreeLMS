@@ -17,7 +17,7 @@ def admin_required(view_func):
     return _wrapped_view
 
 
-def role_required(required_role):
+def role_required(*required_role):
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):

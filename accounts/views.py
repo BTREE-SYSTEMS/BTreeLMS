@@ -13,27 +13,16 @@ from django.contrib import messages
 def Home(request):
     return render(request,"accounts/base.html")
 
-def home_redirect(request):
-    user = request.user
-    try:
-        user_detail = Userdetail.objects.get(username=user.username)
-        user_role = user_detail.usergroupid.usergroupname  # Get the user's role
-    except Userdetail.DoesNotExist:
-        user_role = None  # Default case if user has no role
+@login_required(login_url='login')
+def user_list(request):
+    users = Userdetail.objects.select_related('usergroupid').all()  # Fetch all users with related user group
+    return render(request, 'accounts/user_list.html', {'users': users})
 
-    # Redirect based on role
-    if user_role == 'Admin':
-        return redirect('admin_dashboard')
-    elif user_role == 'Staff':
-        return redirect('staff_dashboard')
-    elif user_role == 'Trainer':
-        return redirect('trainer_dashboard')
-    elif user_role == 'Student':    
-        return redirect('student_dashboard')
-    else:
-        return redirect('no_permission')
+@login_required(login_url='login')
+def user_detail(request, user_id):
+    user = get_object_or_404(Userdetail, userid=user_id)
+    return render(request, 'accounts/user_detail.html', {'user': user})
 
-# User Registration
 @login_required(login_url='login')
 @role_required(["Admin", "Staff"])
 def register(request):
