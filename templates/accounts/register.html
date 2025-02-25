@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>User Registration</title>
-</head>
-<body>
+{% extends 'accounts\base.html' %}
+
+{% block content %}
     <h2>Register</h2>
 
     <form method="POST">
@@ -37,5 +34,6 @@
 
         <button type="submit">Register</button>
     </form>
-</body>
-</html>
+
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

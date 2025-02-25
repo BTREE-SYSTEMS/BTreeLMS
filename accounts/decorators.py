@@ -27,7 +27,7 @@ def role_required(required_role):
             
             print(f"Session in decorator: {dict(request.session)}")  # Debugging session
 
-            if user_role != required_role:
+            if user_role not in required_role:
                 print(f"Unauthorized access blocked! {user_role} tried to access {required_role} page.")
                 return redirect('unauthorized_page')  # Redirect if role doesn't match
 

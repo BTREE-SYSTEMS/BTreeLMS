@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List</title>
-</head>
-<body>
+{% extends "accounts\base.html" %}
+{% load static %}
+{% block title %}Users{% endblock %}
+{% block content %}
     <h2>Existing Users</h2>
     <table border="1">
         <thead>
@@ -35,5 +31,5 @@
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

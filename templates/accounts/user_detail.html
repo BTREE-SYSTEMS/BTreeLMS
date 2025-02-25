@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details</title>
-</head>
-<body>
+
+{% extends 'accounts\base.html' %}
+{% block content %}
     <h2>User Details</h2>
     <p><strong>Username:</strong> {{ user.username }}</p>
     <p><strong>Email:</strong> {{ user.useremail }}</p>
@@ -15,5 +10,4 @@
     <p><strong>Created By:</strong> {{ user.createdby }}</p>
     <p><strong>Created Date:</strong> {{ user.createddate }}</p>
     <a href="{% url 'user_list' %}">Back to User List</a>
-</body>
-</html>
+    {% endblock %}

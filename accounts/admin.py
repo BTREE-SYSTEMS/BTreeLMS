@@ -6,3 +6,5 @@ from .models import Userdetail,Usergroupdetail
 
 admin.site.register(Userdetail)
 admin.site.register(Usergroupdetail)
+admin.site.register(Course)
+admin.site.register(CourseAccess)
