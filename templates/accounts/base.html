@@ -4,12 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        nav>a,nav>span{
+            position: absolute;
+            top: 20px;
+            right: 100px;
+            padding: 10px;
+        }
+        nav>span{
+            top: 50px;
+        }
+    </style>
 </head>
 <body>
 
-    <h3>home page for Every one</h3>
+    <nav>
+        <h1>
+            <a href="{% url 'home' %}">Home</a>  
+        </h1>
+    
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'logout' %}"><button>Logout</button></a>
+            <span>Welcome, {{ request.user.username }}</span>  <!-- Show username if logged in -->
+        {% else %}
+            <a href="{% url 'login' %}"><button>Login</button></a>
+        {% endif %}
+    </nav>
+    
 
-    <a href="{% url 'login' %}"><button>Login</button></a>
+    {% block content %}
+    {% endblock %}
     
 </body>
 </html>

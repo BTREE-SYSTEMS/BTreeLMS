@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'accounts/base.html' %}
 
+{% load static %}
+{% block content %}
     <form method="POST">
         {% csrf_token %}
         <input type="text" name="username" placeholder="Enter Name" required>
         <input type="password" name="password" placeholder="Enter Password" required>
         <button type="submit">Login</button>
-    </form>
+    </form> 
+{% endblock %}<nav>
+    <h3>
+        <a href="{% url 'home' %}">Home</a>  
+    </h3>
 
-    
-    
-    
-</body>
-</html>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}"><button>Logout</button></a>
+        <span>Welcome, {{ request.user.username }}</span>  <!-- Show username if logged in -->
+    {% else %}
+        <a href="{% url 'login' %}"><button>Login</button></a>
+    {% endif %}
+</nav>

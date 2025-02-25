@@ -161,3 +161,29 @@ class Usergroupdetail(models.Model):
 
     def __str__(self):
         return self.usergroupname  # This helps in displaying the name instead of ID
+
+class Course(models.Model):
+    courseid = models.AutoField(db_column='CourseId', primary_key=True)
+    coursename = models.CharField(db_column='CourseName', max_length=200)
+    coursedescription = models.TextField(db_column='CourseDescription', blank=True, null=True)
+    createdby = models.ForeignKey(Userdetail, on_delete=models.CASCADE, db_column='CreatedBy', related_name='created_courses')
+    createddate = models.DateTimeField(db_column='CreatedDate', auto_now_add=True)
+    updatedby = models.ForeignKey(Userdetail, on_delete=models.CASCADE, db_column='UpdatedBy', blank=True, null=True, related_name='updated_courses')
+    updateddate = models.DateTimeField(db_column='UpdatedDate', blank=True, null=True, auto_now=True)
+    isactive = models.BooleanField(db_column='IsActive', default=True)
+    allowed_groups = models.ManyToManyField(Usergroupdetail, through='CourseAccess')
+
+    class Meta:
+        db_table = 'course'
+
+
+class CourseAccess(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    usergroup = models.ForeignKey(Usergroupdetail, on_delete=models.CASCADE)
+    can_view = models.BooleanField(default=False)
+    can_edit = models.BooleanField(default=False)
+    can_delete = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'course_access'
+        unique_together = ('course', 'usergroup')    
